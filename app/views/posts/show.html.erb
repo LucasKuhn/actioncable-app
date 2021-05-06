@@ -1,0 +1,27 @@
+<h1>
+  <%= @post.title %>
+</h1>
+
+<%= simple_format @post.body %>
+
+<hr>
+
+<h3>Comments</h3>
+
+<ul>
+  <% @post.comments.each do |comment| %>
+    <li><%= comment.body %></li>
+  <% end %>
+</ul>
+
+<%= render 'comments/form', comment: Comment.new %>
+
+<script>
+  App.cable.subscriptions.create({ channel: "PostsChannel", id: "<%= @post.id %>" }, {
+    received(comment) {
+      el = document.createElement('li');
+      el.innerHTML = comment;
+      document.querySelector('ul').appendChild(el)
+    }
+  });
+</script>
